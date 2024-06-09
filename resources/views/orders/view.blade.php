@@ -60,7 +60,7 @@
                                                 <label><strong>Alamat:</strong> {{ $row->customer_address }} {{ $row->customer->district->name }} - {{  $row->citie->name }}, {{  $row->citie->postal_code }}</label>
                                             </td>
                                             <td>Rp {{ number_format($row->subtotal) }}</td>
-                                            <td>{{ $row->created_at->format('d-m-Y') }}</td>
+                                            <td>{{ $row->created_at->format('d M Y') }}</td>
                                         </tr>
                                         @empty
                                         <tr>

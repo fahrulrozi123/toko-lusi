@@ -36,17 +36,24 @@ active
             <div class="col-lg-6">
                 <div class="owl-carousel owl-theme s_Product_carousel">
                     <div class="single-prd-item">
-                        <img class="img-fluid" src="{{ asset('storage/products/' . $product->image) }}" alt="{{ $product->name }}">
+                        <img class="img-fluid" src="{{ asset('products/' . $product->image) }}" alt="{{ $product->name }}">
                     </div>
                 </div>
             </div>
             <div class="col-lg-5 offset-lg-1">
                 <div class="s_product_text">
+                    @if (session('success'))
+                        <div class="alert alert-success mt-2">{{ session('success') }}</div>
+                    @endif
                     <h3>{{ $product->name }}</h3>
                     <h2>Rp. {{ number_format($product->price) }}</h2>
                     <ul class="list">
                         <li><a class="active" href="#"><span>Kategori</span> : {{ $product->category->name }}</a></li>
-                        <li><a href="#"><span>Stok</span> : {{ $product->stock }}</a></li>
+                        @if ($product->stock == 0)
+                            <li><a href="#"><span>Stok</span> : <span style="color: red;">Habis</span> </a></li>
+                        @else
+                            <li><a href="#"><span>Stok</span> : {{ $product->stock }}</a></li>
+                        @endif
                         <li>
                             @if(Auth::guard('costumer')->check())
                                 <form action="{{ route('home.addcart') }}" method="post">
@@ -64,10 +71,17 @@ active
                                                 class="reduced items-count" type="button"><i class="lnr lnr-chevron-down"></i></button>
                                         </div>
                                     <hr>
-                                        <button class="button primary-btn" type="submit">Add to cart</button>
-                                        @if (session('success'))
-                                        <div class="alert alert-success mt-2">{{ session('success') }}</div>
-                                        @endif
+                                    @if ($product->stock == 0)
+                                        <a class="gray_btn" href="{{ route('home.product') }}">Lanjutkan Berbelanja</a>
+                                    @else
+                                        @if ($cart)
+                                            <div class="alert alert-warning mb-2">Product sudah ditambahkan ke keranjang</div>
+                                            <a class="gray_btn" href="{{ route('home.product') }}">Lanjutkan Berbelanja</a>
+                                        @else
+                                            <button class="button primary-btn" type="submit">Add to cart</button>
+                                        @endif                                
+                                    @endif
+                                        
                                 </form>
                             @else
                                 <label for="qty"><span>Quantity</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:</label>
@@ -101,7 +115,7 @@ active
                  aria-selected="false">Specification</a>
             </li>
         </ul>
-        <div class="tab-content" id="myTabContent">
+        <div class="tab-content shadow" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 {!! $product->description !!}
             </div>
@@ -149,9 +163,34 @@ active
     </div>
 </section>
 
-
 @endsection
 
 @section('js')
     <script src="{{asset('assets/vendors/nice-select/jquery.nice-select.min.js')}}"></script>
+    <!-- SweetAlert 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+    <script>
+        // Jika terdapat pesan sukses
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+            });
+        @endif
+    </script>
+    <script>
+        // Jika terdapat pesan sukses
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'error!',
+                text: '{{ session('error') }}',
+                showConfirmButton: false,
+                timer: 3000 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+            });
+        @endif
+    </script>
 @endsection

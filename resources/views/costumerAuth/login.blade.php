@@ -65,5 +65,31 @@
 			</div>
 		</div>
 	</section>
+
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+	<script>
+		// Jika terdapat pesan sukses
+		@if(session('error'))
+			Swal.fire({
+				icon: 'error',
+				title: 'Gagal',
+				text: '{{ session('error') }}',
+				showConfirmButton: false,
+				timer: 2500 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+			});
+		@endif
+	</script>
+	<script>
+		// Jika terdapat pesan sukses
+		@if(session('success'))
+			Swal.fire({
+				icon: 'success',
+				title: 'success',
+				text: '{{ session('success') }}',
+				showConfirmButton: false,
+				timer: 2500 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+			});
+		@endif
+	</script>
 @endsection
 

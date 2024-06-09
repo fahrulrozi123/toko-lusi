@@ -8,6 +8,16 @@
 active
 @endsection
 
+<style>
+  a.active {
+    color: blue;
+  }
+
+  a.inactive {
+      color: black;
+  }
+</style>
+
 @section('main')
 <section class="blog-banner-area" id="category">
     <div class="container h-100">
@@ -36,18 +46,24 @@ active
                 <ul>
                     @foreach ($categories as $category)
                         <li class="filter-list">
-                            <strong><a href="{{ url('/category/' . $category->slug) }}">{{ $category->name }}</a></strong>
-
+                            <strong>
+                                <a href="{{ url('/category/' . $category->slug) }}" class="{{ $category->active ? 'active' : 'inactive' }}">
+                                    {{ $category->name }}
+                                </a>
+                            </strong>
+                
                             @foreach ($category->child as $child)
                                 <ul class="list" style="display: block">
                                     <li>
-                                        <a href="{{ url('/category/' . $child->slug) }}">{{ $child->name }}</a>
+                                        <a href="{{ url('/category/' . $child->slug) }}" class="{{ $child->active ? 'active' : 'inactive' }}">
+                                            {{ $child->name }}
+                                        </a>
                                     </li>
                                 </ul>
                             @endforeach
                         </li>
                     @endforeach
-                </ul>
+                </ul>                           
               </li>
             </ul>
           </div>
@@ -98,7 +114,7 @@ active
         <div class="col-xl-9 col-lg-8 col-md-7">
           <!-- Start Filter Bar -->
           <div class="filter-bar d-flex flex-wrap align-items-center">
-            <div class="sorting">
+            {{-- <div class="sorting">
               <select>
                 <option value="1">Default sorting</option>
                 <option value="1">Default sorting</option>
@@ -111,12 +127,19 @@ active
                 <option value="1">Show 12</option>
                 <option value="1">Show 12</option>
               </select>
-            </div>
+            </div> --}}
             <div>
               <div class="input-group filter-bar-search">
-                <input type="text" placeholder="Search">
-                <div class="input-group-append">
-                  <button type="button"><i class="ti-search"></i></button>
+                <div class="input-group">
+                    <form action="{{ route('product.search') }}" method="GET" class="input-group">
+                        @csrf
+                        <input type="text" name="search" class="form-control" placeholder="Cari produk...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti-search"></i>
+                            </button>
+                        </div>
+                    </form>
                 </div>
               </div>
             </div>
@@ -127,21 +150,26 @@ active
             <div class="row">
                 @forelse ($products as $row)
                   <div class="col-md-6 col-lg-4">
-                    <div class="card text-center card-product">
+                    <div class="card text-center card-product shadow">
                       <div class="card-product__img">
-                        <img class="card-img" src="{{ asset('storage/products/' . $row->image) }}" alt="{{ $row->name }}">
+                        {{-- <img class="card-img" src="{{ asset('storage/products/' . $row->image) }}" alt="{{ $row->name }}"> --}}
+                        <img class="card-img" src="{{ asset('products/' . $row->image) }}" alt="{{ $row->name }}">
                         <ul class="card-product__imgOverlay">
-                          <li><button><i class="ti-search"></i></button></li>
-                          <li><button><i class="ti-shopping-cart"></i></button></li>
-                          <li><button><i class="ti-heart"></i></button></li>
+                          {{-- <li><button><i class="ti-search"></i></button></li> --}}
+                            <li><a href="{{ url('/product/' . $row->slug) }}"><button><i class="ti-shopping-cart"></i></button></a></li>
+                          {{-- <li><button><i class="ti-heart"></i></button></li> --}}
                         </ul>
                       </div>
                       <div class="card-body">
+                        
                         <p>{{ $row->category->name}}</p>
                         @if(Auth::guard('costumer')->check())
                             <h4 class="card-product__title"><a href="{{ url('/costumer/product/' . $row->slug) }}">{{ $row->name }}</a></h4>
                         @else
                             <h4 class="card-product__title"><a href="{{ url('/product/' . $row->slug) }}">{{ $row->name }}</a></h4>
+                        @endif
+                        @if ($row->stock == 0)
+                          <p class="text-danger">Habis</p>
                         @endif
                         <p class="card-product__price">Rp. {{ number_format($row->price) }}</p>
                       </div>
@@ -164,4 +192,16 @@ active
 
 @section('js')
     <script src="{{asset('assets/vendors/nice-select/jquery.nice-select.min.js')}}"></script>
+
+    <script>
+      $('#existProduct').on('keyup',function(){
+        Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 3000 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+            });
+      });
+    </script>
 @endsection

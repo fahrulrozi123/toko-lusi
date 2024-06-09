@@ -18,14 +18,25 @@ class HomeController extends Controller
 
     public function index()
     {
-        $products = Product::orderBy('created_at', 'DESC')->paginate(8);
-
+        $products = Product::orderBy('created_at', 'DESC')->paginate(4);
+    
         return view('costumer.index', compact('products'));
-    }
+    }    
 
     public function product()
     {
         $products = Product::orderBy('created_at', 'DESC')->paginate(12);
+
+        return view('costumer.produk', compact('products'));
+    }
+
+    public function cari(Request $request)
+    {
+        $search = $request->input('search');
+
+        $products = Product::where('name', 'like', '%'.$search.'%')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(12);
 
         return view('costumer.produk', compact('products'));
     }
@@ -40,8 +51,9 @@ class HomeController extends Controller
     public function show($slug)
     {
         $product = Product::with(['category'])->where('slug', $slug)->first();
+        $cart = Cart::where('product_id', $product->id)->first();
 
-        return view('costumer.show', compact('product'));
+        return view('costumer.show', compact('product', 'cart'));
     }
 
 }

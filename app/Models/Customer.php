@@ -13,7 +13,7 @@ class Customer extends Authenticatable
     use Notifiable;
 
     protected $table = 'customers';
-    protected $fillable = ['email', 'password'];
+    protected $guarded = [];
     protected $hidden = ['password', 'remember_token'];
 
     public function district()

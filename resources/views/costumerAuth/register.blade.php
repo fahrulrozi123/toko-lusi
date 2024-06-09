@@ -46,22 +46,45 @@
                         <form class="row login_form" method="POST" action="{{ route('costumer.register.post') }}" id="register_form" >
                             @csrf
                             <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" :value="old('name')" required autofocus autocomplete="name">
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" placeholder="Your Name" :value="old('name')" required autofocus autocomplete="name">
+                                @error('name')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="col-md-12 form-group">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" name="email" :value="old('email')" required>
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" placeholder="Email Address" :value="old('email')" required>
+                                @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="col-md-12 form-group">
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required autocomplete="new-password">
+                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Password" required autocomplete="new-password">
+                                @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="col-md-12 form-group">
                                 <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" name="password_confirmation" required autocomplete="new-password">
                             </div>
                             <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Your Phone Number" :value="old('phone_number')" required autocomplete="phone_number">
+                                <input type="text" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" placeholder="Your Phone Number" :value="old('phone_number')" required autocomplete="phone_number">
+                                @error('phone_number')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                             <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="address" name="address" placeholder="Your Address" :value="old('address')" required autocomplete="address">
+                                <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" placeholder="Your Address" :value="old('address')" required autocomplete="address">
+                                @error('address')
+                                        <strong>{{ $message }}</strong>
+                                @enderror
                             </div>
 
                             <div class="col-md-12 form-group p_star">
@@ -132,6 +155,22 @@
                 }
             });
         })
+    </script>
+
+    <script>
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        function validatePassword() {
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.setCustomValidity("Confirm password harus sama dengan password");
+            } else {
+                confirmPasswordInput.setCustomValidity('');
+            }
+        }
+
+        passwordInput.addEventListener('change', validatePassword);
+        confirmPasswordInput.addEventListener('input', validatePassword);
     </script>
 
 @endsection

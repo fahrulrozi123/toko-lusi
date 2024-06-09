@@ -31,7 +31,7 @@
                                     <input type="text" name="name" class="form-control" required>
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
                                 </div>
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     <label for="parent_id">Kategori</label>
                                       <!-- VARIABLE $PARENT PADA METHOD INDEX KITA GUNAKAN DISINI -->
                                     <!-- UNTUK MENAMPILKAN DATA CATEGORY YANG PARENT_ID NYA NULL -->
@@ -43,7 +43,7 @@
                                         @endforeach
                                     </select>
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
-                                </div>
+                                </div> --}}
                                 <div class="form-group">
                                     <button class="btn btn-primary btn-sm">Tambah</button>
                                 </div>
@@ -79,7 +79,7 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Kategori</th>
-                                            <th>Parent</th>
+                                            {{-- <th>Parent</th> --}}
                                             <th>Created At</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -92,10 +92,10 @@
                                             <td><strong>{{ $val->name }}</strong></td>
                                           
                                           	<!-- MENGGUNAKAN TERNARY OPERATOR, UNTUK MENGECEK, JIKA $val->parent ADA MAKA TAMPILKAN NAMA PARENTNYA, SELAIN ITU MAKA TANMPILKAN STRING - -->
-                                            <td>{{ $val->parent ? $val->parent->name:'-' }}</td>
+                                            {{-- <td>{{ $val->parent ? $val->parent->name:'-' }}</td> --}}
                                           
                                             <!-- FORMAT TANGGAL KETIKA KATEGORI DIINPUT SESUAI FORMAT INDONESIA -->
-                                            <td>{{ $val->created_at->format('d-m-Y') }}</td>
+                                            <td>{{ $val->created_at->format('d M Y') }}</td>
                                             <td>
                                               
                                                 <!-- FORM ACTION UNTUK METHOD DELETE -->

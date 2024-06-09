@@ -19,6 +19,7 @@ class CreateCustomersTable extends Migration
             $table->string('email')->unique(); //FIELD INI DIBUAT UNIK UNTUK MENGHINDARI DUPLIKAT DATA
             $table->string('phone_number')->nullable();
             $table->string('address')->nullable();
+            $table->unsignedBigInteger('province_id')->nullable(); //FIELD INI AKAN MERUJUK PADA TABLE districts NANTINYA UNTUK MENGAMBIL DATA KOTA CUSTOMER
             $table->unsignedBigInteger('district_id')->nullable(); //FIELD INI AKAN MERUJUK PADA TABLE districts NANTINYA UNTUK MENGAMBIL DATA KOTA CUSTOMER
             $table->boolean('status')->default(false); //TIPENYA BOOLEAN, DENGAN NILAI DEFAULT ADALAH FALSE
             $table->timestamps();

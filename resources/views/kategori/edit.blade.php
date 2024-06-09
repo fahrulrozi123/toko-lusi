@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-\<main class="main">
+<main class="main">
     <ol class="breadcrumb">
         <li class="breadcrumb-item">Home</li>
         <li class="breadcrumb-item active">Edit Kategori</li>
@@ -15,7 +15,7 @@
     <div class="container-fluid">
         <div class="animated fadeIn">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">Edit Kategori</h4>
@@ -32,7 +32,7 @@
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
                                 </div>
                                 <div class="form-group">
-                                    <label for="parent_id">Kategori</label>
+                                    {{-- <label for="parent_id">Kategori</label>
                                     <select name="parent_id" class="form-control">
                                         <option value="">None</option>
                                         @foreach ($parent as $row)
@@ -42,7 +42,7 @@
                                         @endforeach
                                     </select>
                                     <p class="text-danger">{{ $errors->first('name') }}</p>
-                                </div>
+                                </div> --}}
                                 <div class="form-group">
                                     <button class="btn btn-primary btn-sm">Simpan</button>
                                 </div>

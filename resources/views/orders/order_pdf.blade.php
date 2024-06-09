@@ -8,15 +8,15 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 </head>
 <body>
-    <h5>Laporan Order Periode ({{ $date[0] }} - {{ $date[1] }})</h5>
+    <h5 class="text-center">Laporan Order Periode ({{ $date[0] }} - {{ $date[1] }})</h5>
     <hr>
-    <table width="100%" class="table-hover table-bordered">
+    <table width="100%" class="table table-bordered">
         <thead>
-            <tr>
+            <tr class="text-center">
                 <th>InvoiceID</th>
                 <th>Pelanggan</th>
-                <th>Subtotal</th>
                 <th>Tanggal</th>
+                <th>Subtotal</th>
             </tr>
         </thead>
         <tbody>
@@ -29,8 +29,8 @@
                         <label><strong>Telp:</strong> {{ $row->customer_phone }}</label><br>
                         <label><strong>Alamat:</strong> {{ $row->customer_address }} {{ $row->customer->district->name }} - {{  $row->citie->name }}, {{  $row->citie->postal_code }}</label>
                     </td>
-                    <td>Rp {{ number_format($row->subtotal) }}</td>
-                    <td>{{ $row->created_at->format('d-m-Y') }}</td>
+                    <td>{{ $row->created_at->format('d M Y') }}</td>
+                    <td class="text-right">Rp {{ number_format($row->subtotal) }}</td>
                 </tr>
 
                 @php $total += $row->subtotal @endphp
@@ -41,10 +41,9 @@
             @endforelse
         </tbody>
         <tfoot>
-            <tr>
-                <td colspan="2">Total</td>
-                <td>Rp {{ number_format($total) }}</td>
-                <td></td>
+            <tr style="background-color: yellow; border: 1px solid black;">
+                <td colspan="3" class="text-center">Total</td>
+                <td class="text-right">Rp {{ number_format($total) }}</td>
             </tr>
         </tfoot>
     </table>

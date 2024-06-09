@@ -57,9 +57,9 @@
                                     <tr>
                                         <td>
                                             @if ($row->status == 0)
-                                                <a class="gray_btn" href="/costumer/payment/{{$row->invoice}}">Upload bukti pembayaran</a>
+                                                <a class="btn btn-outline-info" href="/costumer/payment/{{$row->invoice}}">Upload bukti pembayaran</a>
                                             @else
-                                                <img class="card-img" src="{{ asset('storage/payment/' .$row->payment['proof']) }}" style="height: 100px; width: auto;" alt="{{$row->payment['proof']}}">
+                                                <img class="card-img" src="{{ asset('payment/' .$row->payment['proof']) }}" style="height: 100px; width: auto;" alt="{{$row->payment['proof']}}">
                                             @endif
                                         </td>
 
@@ -126,4 +126,18 @@
         </div>
     </div>
 </section>
+<!-- SweetAlert 2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+<script>
+    // Jika terdapat pesan sukses
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 2500 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+        });
+    @endif
+</script>
 @endsection

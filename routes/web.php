@@ -10,6 +10,7 @@ use App\Http\Controllers\Ecommerce\FrontController;
 use App\Http\Controllers\Ecommerce\CartController;
 use App\Http\Controllers\Ecommerce\OrderController as EcommerceOrderController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\DashboardController;
 use App\Models\OrderDetail;
 
 /*
@@ -35,13 +36,14 @@ Route::get('/coba', function () {
     return view('costumer.cart');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+// Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');
 
 Route::group(['middleware' => ['auth']], function () {
 
     /* route product */
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('auth/product', [ProductController::class, 'index'])->name('product.index');
     Route::get('create/product', [ProductController::class, 'create'])->name('product.create');
     Route::post('create/product', [ProductController::class, 'store'])->name('product.store');
@@ -67,7 +69,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('order/pdf/{daterange}', [OrderController::class, 'orderReportPdf'])->name('report.order_pdf');
 });
 
-
 /* costumer login & register */
 Route::prefix('/costumer')->name('costumer.')->namespace('Costumer')->group(function(){
     Route::get('/login', [CostumersController::class, 'showLoginForm'])->name('login');
@@ -77,14 +78,17 @@ Route::prefix('/costumer')->name('costumer.')->namespace('Costumer')->group(func
     Route::post('/register', [CostumerRegistriController::class, 'createCostumer'])->name('register.post');
 });
 
-
-
 /* costumer after login */
 Route::group(['middelware' => 'costumer'], function () {
+    Route::get('/costumer/profile', [CostumersController::class, 'editProfileAndPassword'])->name('costumer.profile');
+    Route::put('/costumer/update-profile', [CostumersController::class, 'updateProfile'])->name('costumer.updateProfile');
+    Route::put('/costumer/update-password', [CostumersController::class, 'updatePassword'])->name('costumer.updatePassword');
+
     Route::get('/costumer/home', [HomeController::class, 'index'])->name('home.index');
     Route::get('/costumer/produk', [HomeController::class, 'product'])->name('home.product');
     Route::get('/costumer/category/{slug}', [HomeController::class,'categoryProduct'])->name('home.category');
     Route::get('/costumer/product/{slug}', [HomeController::class, 'show'])->name('home.show_product');
+    Route::get('/costumer/search', [HomeController::class, 'cari'])->name('product.search');
 
     Route::get('/costumer/cart', [CartController::class, 'index'])->name('home.list_cart');
     Route::get('/costumer/checkout', [EcommerceOrderController::class, 'checkout'])->name('home.checkout');

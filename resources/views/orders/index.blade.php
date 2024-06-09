@@ -55,6 +55,7 @@
                                             <th>Pelanggan</th>
                                             <th>Subtotal</th>
                                             <th>Tanggal</th>
+                                            <th>Bukti Pembayaran</th>
                                             <th>Status</th>
                                             <th>Aksi</th>
                                         </tr>
@@ -69,7 +70,31 @@
                                                 <label><strong>Alamat:</strong> {{ $row->customer_address }} {{ $row->customer->district->name }} - {{  $row->citie->name }}, {{  $row->citie->postal_code }}</label>
                                             </td>
                                             <td>Rp {{ number_format($row->subtotal) }}</td>
-                                            <td>{{ $row->created_at->format('d-m-Y') }}</td>
+                                            <td>{{ $row->created_at->format('d M Y') }}</td>
+                                            <td>
+                                                @if($row->payment && $row->payment->proof)
+                                                    <a data-toggle="modal" data-target="#proofModal{{ $row->id }}">
+                                                        <img class="card-img" src="{{ asset('payment/' . $row->payment->proof) }}" style="height: 100px; width: auto;" alt="{{ $row->payment->proof }}">
+                                                    </a>
+                                        
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="proofModal{{ $row->id }}" tabindex="-1" role="dialog" aria-labelledby="proofModalLabel{{ $row->id }}" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-body">
+                                                                    <img src="{{ asset('payment/' . $row->payment->proof) }}" class="img-fluid" alt="{{ $row->payment->proof }}">
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <a href="{{ asset('payment/' . $row->payment->proof) }}" class="btn btn-primary" download>Download</a>
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <p class="badge badge-danger">Belum bayar</p>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if ($row->status == 0)
                                                     <span class="badge badge-secondary">Baru</span>
@@ -85,33 +110,29 @@
                                             </td>
                                             <td>
                                                 @if ($row->status == 0)
-
-                                                    <button class="btn btn-secondary btn-sm">Baru</button><br><br>
-                                                    <a class="btn btn-danger" href="/costumer/pdf/{{$row->id}} ">View invoice</a>
+                                                    <a class="btn btn-outline-danger btn-sm" href="/costumer/pdf/{{$row->id}}">View invoice</a>
                                                 @elseif ($row->status == 1)
-                                                    <button class="btn btn-primary btn-sm">Dikonfirmasi</button><br>
-                                                    <form action="update/{{$row->id}} " method="post">
+                                                    <form action="update/{{$row->id}}" method="post">
                                                         @csrf
                                                         <input type="hidden" name="status" value="2">
-                                                        <button class="btn btn-success btn-sm" type="submit">Update ke Proses</button>
+                                                        <button class="btn btn-outline-success btn-sm" type="submit">Update ke Proses</button>
                                                     </form>
                                                 @elseif ($row->status == 2)
-                                                    <form action="update/{{$row->id}} " method="post">
+                                                    <form action="update/{{$row->id}}" method="post">
                                                         @csrf
                                                         <input type="hidden" name="status" value="3">
                                                         <button class="btn btn-info btn-sm" type="submit">Update ke Dikirim</button>
                                                     </form>
                                                 @elseif ($row->status == 3)
-                                                    <button class="btn btn-danger btn-sm" type="submit">Tunggu custommer update ke Selesai</button>
+                                                    <span class="badge badge-warning">Tunggu customer update ke Selesai</span>
                                                 @elseif ($row->status == 4)
                                                     <form action="destroy/{{$row->id}}" method="post">
                                                         @csrf
                                                         @method('DELETE')
-
-                                                        <button class="btn btn-warning btn-sm" disabled>selesai</button>
-                                                        <button class="btn btn-danger btn-sm">Hapus</button>
+                                                        <button class="btn btn-outline-danger btn-sm">Hapus</button>
                                                     </form>
                                                 @endif
+
                                             </td>
                                         </tr>
                                         @empty
@@ -130,4 +151,19 @@
         </div>
     </div>
 </main>
+
+<!-- SweetAlert 2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+<script>
+    // Jika terdapat pesan sukses
+    @if(session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            showConfirmButton: false,
+            timer: 1500 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+        });
+    @endif
+</script>
 @endsection

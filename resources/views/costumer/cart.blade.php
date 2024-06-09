@@ -61,7 +61,7 @@
                                         <td>
                                             <div class="media">
                                                 <div class="d-flex">
-                                                    <img src="{{ asset('storage/products/' . $row->product->image) }}" style="height: 100px;" alt="">
+                                                    <img src="{{ asset('products/' . $row->product->image) }}" style="height: 100px;" alt="">
                                                 </div>
                                                 <div class="media-body">
                                                     <p>{{$row->product->name}}</p>
@@ -205,8 +205,8 @@
                                             <a class="gray_btn" href=" {{route('home.product')}} ">Lanjutkan Berbelanja</a>
                                             <a class="primary-btn ml-2" href=" {{route('home.checkout')}} ">Checkout</a>
                                         @else
-                                        <a class="primary-btn ml-2" href=" {{route('home.product')}} ">Lanjutkan Berbelanja</a>
-                                        <a href=" {{route('home.checkout')}} "><button class="gray_btn" disabled="disabled">Checkout</button></a>
+                                            <a class="primary-btn ml-2" href=" {{route('home.product')}} ">Lanjutkan Berbelanja</a>
+                                            <a href=" {{route('home.checkout')}} "><button class="gray_btn" disabled="disabled">Checkout</button></a>
                                         @endif
 
                                     </div>
@@ -224,59 +224,32 @@
 
 @section('js')
     <script src="{{asset('assets/vendors/nice-select/jquery.nice-select.min.js')}}"></script>
-    {{-- <script type="text/javascript">
-        $('#province_id').on('change', function() {
-            $.ajax({
-                url: "{{ url('/api/city') }}",
-                type: "GET",
-                data: { province_id: $(this).val() },
-                success: function(html){
-
-                    $('#city_id').empty()
-                    $('#city_id').append('<option value="">Pilih Kabupaten/Kota</option>')
-                    $.each(html.data, function(key, item) {
-                        $('#city_id').append('<option value="'+item.id+'">'+item.name+'</option>')
-                    })
-                }
+    <!-- SweetAlert 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+    <script>
+        // Jika terdapat pesan sukses
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 1500 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
             });
-        })
-
-        $('#courier').on('change', function() {
-            $('#service').empty()
-            $('#service').append('<option value="">Loading...</option>')
-            $.ajax({
-                url:"{{ route('home.cekongkir') }}",
-                type: "POST",
-                data: {
-                        _token:              $("meta[name='csrf-token']").attr("content"),
-                        city_origin:         $('input[name=city_origin]').val(),
-                        city_destination:    $('select[name=city_destination]').val(),
-                        courier:             $('select[name=courier]').val(),
-                        weight:              $('#weight').val(),
-                    },
-
-                success: function(response){
-                    $('#service').empty();
-                    $('#service').append('<option value="">Pilih service</option>')
-                    $.each(response[0]['costs'], function (key, value) {
-                        $('#service').append('<option>'+response[0].code.toUpperCase()+' : <strong>'+value.service+'</strong>, '+value.cost[0].value+', ('+value.cost[0].etd+' hari)</option>')
-                    });
-                }
+        @endif
+    </script>
+    <script>
+        // Jika terdapat pesan sukses
+        @if(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'error!',
+                text: '{{ session('error') }}',
+                showConfirmButton: false,
+                timer: 1500 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
             });
-        })
-
-        $('#service').on('change', function() {
-            let split = $(this).val().split(',')
-            $('#ongkir').text('Ongkir : Rp. ' + split[1])
-            $('#resi').text('Perkiraan waktu sampai : ' + split[2])
-
-            let subtotal = "{{ $subtotal }}"
-            let total = parseInt(subtotal) + parseInt(split[1])
-            $('#total').text('Rp. ' + total)
-            $('#subtotal').append('<input type="text" name="subtotal" value="'+total+'" disabled required>')
-        })
-
-    </script>     --}}
+        @endif
+    </script>
 
 @endsection
 

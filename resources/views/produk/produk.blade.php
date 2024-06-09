@@ -15,16 +15,16 @@
     <div class="container-fluid">
         <div class="animated fadeIn">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-sm-12">
                     <div class="card">
                         <div class="card-header">
                             <h4 class="card-title">
                                 List Product
-                                <div class="float-right">
-                                    <a href="{{ route('product.bulk') }}" class="btn btn-danger btn-sm">Mass Upload</a>
-                                    <a href="{{ route('product.create') }}" class="btn btn-primary btn-sm">Tambah</a>
-                                </div>
                             </h4>
+                            <div class="d-flex justify-content-end" >
+                                {{-- <a href="{{ route('product.bulk') }}" class="btn btn-danger btn-sm">Mass Upload</a> --}}
+                                <a href="{{ route('product.create') }}" class="btn btn-primary btn-sm">Tambah</a>
+                            </div>
                         </div>
                         <div class="card-body">
                             <!-- JIKA TERDAPAT FLASH SESSION, MAKA TAMPILAKAN -->
@@ -68,7 +68,7 @@
                                         <tr>
                                             <td>
                                                 <!-- TAMPILKAN GAMBAR DARI FOLDER PUBLIC/STORAGE/PRODUCTS -->
-                                                <img src="{{ asset('storage/products/' . $row->image) }}" width="100px" height="100px" alt="{{ $row->name }}">
+                                                <img src="{{ asset('products/' . $row->image) }}" width="100px" height="100px" alt="{{ $row->name }}">
                                             </td>
                                             <td>
                                                 <strong>{{ $row->name }}</strong><br>
@@ -78,7 +78,7 @@
                                                 <label>Stok: <span class="badge badge-info">{{ $row->stock }}</span></label>
                                             </td>
                                             <td>Rp {{ number_format($row->price) }}</td>
-                                            <td>{{ $row->created_at->format('d-m-Y') }}</td>
+                                            <td>{{ $row->created_at->format('d M Y') }}</td>
 
                                             <!-- KARENA BERISI HTML MAKA KITA GUNAKAN { !! UNTUK MENCETAK DATA -->
                                             <td>{!! $row->status_label !!}</td>

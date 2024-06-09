@@ -54,6 +54,7 @@ class CostumerRegistriController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'phone_number' => ['required', 'string', 'min:11'],
             'address' => ['required', 'string'],
+            'province_id' => ['required'],
             'citie_id' => ['required'],
             'district_id' => ['required'],
         ]);
@@ -64,10 +65,12 @@ class CostumerRegistriController extends Controller
         $data->password = bcrypt($request->password);
         $data->phone_number = $request->phone_number;
         $data->address = $request->address;
+        $data->province_id = $request->province_id;
         $data->citie_id = $request->citie_id;
         $data->district_id = $request->district_id;
         $data->save();
-        return redirect('/costumer/login')->with('alert-success','Kamu berhasil Register');
+        session()->flash('success', 'Anda berhasil register.');
+        return redirect('/costumer/login');
     }
 
     protected function updateFormCostumer(Request $request){

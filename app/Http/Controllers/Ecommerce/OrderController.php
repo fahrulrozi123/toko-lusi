@@ -14,6 +14,7 @@ use App\Models\Product;
 use App\Models\Payment;
 use Illuminate\Support\Carbon;
 use PDF;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
@@ -22,11 +23,7 @@ class OrderController extends Controller
         $cart = Cart::where('customer_id', Auth::guard('costumer')->user()->id)->get();
         $order = Order::where('invoice', $invoice)->first();
 
-
-
         $order_detail = OrderDetail::where('order_id', $order['id'])->first();
-
-
 
         $subtotal = collect($cart)->sum(function($q){
             return $q['qty'] * $q['cart_price'];
@@ -146,7 +143,7 @@ class OrderController extends Controller
         if ($request->hasFile('proof')) {
             $file = $request->file('proof');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/payment', $filename);
+            $file->move(public_path('payment'), $filename);
         }
             Payment::create([
                 'order_id' => $request->order_id,
@@ -160,7 +157,9 @@ class OrderController extends Controller
 
             $order->update(['status' => 1]);
             DB::commit();
-            return redirect(route('home.orderdetail'));
+
+        session()->flash('success', "Upload bukti pembayaran berhasil. Silahkan tunggu konfirmasi dari admin!");
+        return redirect(route('home.orderdetail'));
 
     }
 
@@ -169,6 +168,7 @@ class OrderController extends Controller
             'status' => $request['status']
             ]);
 
+        session()->flash('success', "Pesanan anda sudah selesai. Terimakasih Sudah berbelanja di TOKO LUSI ");
         return redirect(route('home.orderdetail'));
     }
 }

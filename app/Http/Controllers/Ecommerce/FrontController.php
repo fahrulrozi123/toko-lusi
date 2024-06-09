@@ -6,12 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Cart;
 
 class FrontController extends Controller
 {
     public function index()
     {
-        $products = Product::orderBy('created_at', 'DESC')->paginate(8);
+        $products = Product::orderBy('created_at', 'DESC')->paginate(4);
 
         return view('costumer.index', compact('products'));
     }
@@ -33,7 +34,9 @@ class FrontController extends Controller
     public function show($slug)
     {
         $product = Product::with(['category'])->where('slug', $slug)->first();
+        $cart = Cart::where('product_id', $product->id)->first();
 
-        return view('costumer.show', compact('product'));
+        return view('costumer.show', compact('product', 'cart'));
     }
+
 }

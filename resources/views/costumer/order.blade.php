@@ -40,6 +40,7 @@
 <section class="order_details section-margin--small">
 <div class="container">
   <p class="text-center billing-alert">Thank you. Your order has been received.</p>
+  <p class="text-center billing-alert" style="color: black;">Silahkan upload bukti pembayaran anda di <a href="/costumer/order-detail">sini</a>.</p>
   <div class="center">
     <a href=" /costumer/pdf/{{$order->id}} "><button class="button">Download Invoice</button></a>
   </div>
@@ -97,15 +98,15 @@
         <table class="order-rable">
           <tr>
             <td>Street</td>
-            <td>: 56/8 panthapath</td>
+            <td>: Tigaraksa</td>
           </tr>
           <tr>
             <td>City</td>
-            <td>: Dhaka</td>
+            <td>: Tangerang</td>
           </tr>
           <tr>
             <td>Country</td>
-            <td>: Bangladesh</td>
+            <td>: Indonesia</td>
           </tr>
           <tr>
             <td>Postcode</td>

@@ -71,19 +71,21 @@
         <div class="row">
 
           @foreach ($products as $row)
-            <div class="col-md-6 col-lg-4 col-xl-3">
-              <div class="card text-center card-product">
+            <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+              <div class="card text-center card-product shadow" style="height: 100%; width: 100%;">
                 <div class="card-product__img">
-                  <img class="card-img" src="{{ asset('storage/products/' . $row->image) }}" alt="{{ $row->name }}">
+                  <img class="card-img" src="{{ asset('products/' . $row->image) }}" alt="{{ $row->name }}" style="max-height: 100%; width: 100%;">
                   <ul class="card-product__imgOverlay">
-                    <li><button><i class="ti-search"></i></button></li>
                     <li><a href="{{ url('/product/' . $row->slug) }}"><button><i class="ti-shopping-cart"></i></button></a></li>
-                    <li><button><i class="ti-heart"></i></button></li>
+                    {{-- <li><button><i class="ti-heart"></i></button></li> --}}
                   </ul>
                 </div>
                 <div class="card-body">
                   <p>{{ $row->category->name}}</p>
-                  <h4 class="card-product__title"><a href="single-product.html">{{$row->name}}</a></h4>
+                  <h4 class="card-product__title"><a href="{{ url('/costumer/product/' . $row->slug) }}">{{ $row->name }}</a></h4>
+                  @if ($row->stock == 0)
+                    <p class="text-danger">Habis</p>
+                  @endif
                   <p class="card-product__price">Rp. {{ number_format($row->price) }}</p>
                 </div>
               </div>
@@ -91,9 +93,24 @@
           @endforeach
 
         </div>
+        {{ $products->links() }}
       </div>
     </section>
     <!-- ================ trending product section end ================= -->
 
   </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@latest"></script>
+	<script>
+		// Jika terdapat pesan sukses
+		@if(session('success'))
+			Swal.fire({
+				icon: 'success',
+				title: 'success',
+				text: '{{ session('success') }}',
+				showConfirmButton: false,
+				timer: 3500 // Tampilkan selama 1.5 detik, sesuaikan dengan kebutuhan Anda
+			});
+		@endif
+	</script>
 @endsection

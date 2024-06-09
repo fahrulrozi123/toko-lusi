@@ -17,14 +17,17 @@ use App\Models\Citie;
 use App\Models\Payment;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use PDF;
 
 class OrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['customer.district.citie.province'])
+        $orders = Order::with(['customer.district.citie.province', 'payment'])
             ->orderBy('created_at', 'DESC');
+        
+        $bukti = Order::with('payment')->get();           
 
         if (request()->q != '') {
             $orders = $orders->where(function($q) {
@@ -38,15 +41,40 @@ class OrderController extends Controller
             $orders = $orders->where('status', request()->status);
         }
         $orders = $orders->paginate(10);
-        return view('orders.index', compact('orders'));
+        return view('orders.index', compact('orders', 'bukti'));
     }
 
-    public function update(Request $request){
-        $orders = Order::where('id', $request->id)->update([
-            'status' => $request['status']
-            ]);
-
+    public function update(Request $request)
+    {
+        $orderId = $request->id;
+    
+        $orders = Order::where('id', $orderId)->update([
+            'status' => $request->status,
+        ]);
+    
+        $statusLabel = $this->getStatusLabel($request->status);
+    
+        session()->flash('success', "Status pesanan berhasil diubah menjadi $statusLabel");
         return redirect(route('order.index'));
+    }
+    
+    // Method untuk mendapatkan label status
+    private function getStatusLabel($status)
+    {
+        switch ($status) {
+            case 0:
+                return 'Baru';
+            case 1:
+                return 'Dikonfirmasi';
+            case 2:
+                return 'Proses';
+            case 3:
+                return 'Dikirim';
+            case 4:
+                return 'Tunggu customer update ke Selesai';
+            default:
+                return 'Unknown';
+        }
     }
 
     public function destroy($id){

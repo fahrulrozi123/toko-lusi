@@ -20,10 +20,12 @@ use App\Models\Courier;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Kavist\RajaOngkir\Facades\RajaOngkir;
+use Illuminate\Support\Facades\Hash;
 
 class CartController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $cart = Cart::where('customer_id', Auth::guard('costumer')->user()->id)->get();
 
 
@@ -83,7 +85,6 @@ class CartController extends Controller
         return view('costumer.order', compact('cart', 'subtotal', 'weight', 'couriers', 'provinces'));
     }
 
-
     public function getCity($id)
     {
         $cities = Citie::where('province_id', $id)->pluck('name', 'id');
@@ -98,7 +99,6 @@ class CartController extends Controller
     }
     */
 
-
     public function check_ongkir(Request $request){
         $cost = RajaOngkir::ongkosKirim([
             'origin'       => $request->city_origin,
@@ -110,14 +110,22 @@ class CartController extends Controller
         return response()->json($cost);
     }
 
-    public function addToCart(Request $request){
-        $this->validate($request,[
+    public function addToCart(Request $request)
+    {
+        $this->validate($request, [
             'customer_id' => ['required'],
             'product_id' => ['required'],
             'cart_price' => ['required'],
             'cart_weight' => ['required'],
-            'qty' => ['required'],
+            'qty' => ['required', 'numeric', 'min:1'],
         ]);
+
+        $product = Product::find($request->product_id);
+
+        if ($request->qty > $product->stock) {
+            session()->flash('error', 'Quantity tidak boleh lebih dari stok produk.');
+            return back();
+        }
 
         $data = new Cart();
         $data->customer_id = $request->customer_id;
@@ -127,22 +135,36 @@ class CartController extends Controller
         $data->qty = $request->qty;
         $data->save();
 
-        return back()->with('alert-success','Kamu berhasil Register');
+        session()->flash('success', 'Produk berhasil ditambahkan ke keranjang!');
+        return back();
     }
 
     public function destroy($id){
         $cart = Cart::find($id);
         $cart->delete();
 
-        return back()->with('alert-success','Kamu berhasil Register');
-    }
-
-    public function updateCart(Cart $cart){
-        $cart->update([
-            'qty' => request('qty')
-        ]);
-
+        session()->flash('success', 'Produk berhasil dihapus dari keranjang!');
         return back();
     }
 
+    public function updateCart(Cart $cart)
+    {
+        $this->validate(request(), [
+            'qty' => ['required', 'numeric', 'min:1'],
+        ]);
+    
+        $product = Product::find($cart->product_id);
+    
+        if (request('qty') > $product->stock) {
+            session()->flash('error', 'Quantity tidak boleh lebih dari stok produk.');
+            return back();
+        }
+    
+        $cart->update([
+            'qty' => request('qty')
+        ]);
+    
+        session()->flash('success', 'Jumlah qty berhasil diupdate!');
+        return back();
+    }
 }
